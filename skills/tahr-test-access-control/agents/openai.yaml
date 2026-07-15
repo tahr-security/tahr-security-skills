@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tahr Test Access Control"
+  short_description: "Test role, tenant, and object authorization"
+  default_prompt: "Use $tahr-test-access-control to test object, function, role, and tenant authorization in this application."
