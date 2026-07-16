@@ -1,134 +1,260 @@
 ---
 name: tahr-threat-model-app
-description: Build an implementation-backed application threat model with assets, actors, trust boundaries, data flows, abuse cases, attack paths, security invariants, control gaps, and executable validation tests. Use for architecture or feature threat modeling, design reviews, pre-pentest planning, API and GraphQL risk analysis, privacy reviews, AI/LLM workflows, or when source, specifications, diagrams, and deployment documents must be correlated.
+description: Build a full, implementation-backed threat model of an entire existing application, covering actors, assets, trust boundaries, entrypoints, hop-level data flows, abuse cases, connected attack paths, security invariants, control gaps, risk responses, and executable validation handoffs. Use for comprehensive system threat modeling, security architecture assessment, pentest preparation, or correlating a complete application repository with configuration, IaC, API schemas, diagrams, and deployment documentation. Do not use for a feature-only, diff-only, or design-only review.
 ---
 
 # Tahr Threat Model App
 
-Use source as evidence of observed implementation and use specifications and
-documents as evidence of intent. Produce a decision-oriented threat model, not
-a list of isolated code smells and not a verified vulnerability report.
+Model the entire existing application as an attacker would. Use source and
+configuration for observed implementation, documents for intended behavior,
+and runtime evidence only when the exact target and test are authorized.
+Produce a decision and validation plan, not a code-smell list and not a
+verified-vulnerability report.
 
-## Set scope and evidence classes
+## Load the operating contract
 
-1. Record the repository revision, included packages, deployment environments,
-   supplied documents/specifications, exclusions, and unanswered questions.
-2. Label every material statement as `observed`, `intended`, `inferred`, or
-   `unknown`. Do not let documentation or a framework convention prove runtime
-   behavior.
-3. Default to read-only source and document analysis. Use a runtime target only
-   with explicit authorization for that target and safe test objective.
-4. Redact credentials, tokens, private keys, personal data, and customer data.
-   Preserve only the minimum non-secret evidence needed for traceability.
+Before modeling:
 
-Read [threat-model-ledgers.md](references/threat-model-ledgers.md) before
-building the model. Use its inventory, flow, risk, control, test, and coverage
-records throughout the work.
+1. Read [full-review-workflow.md](references/full-review-workflow.md) for the
+   end-to-end sequence and completion gates.
+2. Read [threat-model-ledgers.md](references/threat-model-ledgers.md) for the
+   canonical record relationships and exact enums.
+3. Read
+   [threat-evidence-and-quality-gates.md](references/threat-evidence-and-quality-gates.md)
+   before accepting threats, risk ratings, or a complete status.
+4. Read [specialist-handoffs.md](references/specialist-handoffs.md) before
+   assigning validation work to another Tahr skill.
+5. Use [worked-example.md](references/worked-example.md) only when the expected
+   evidence-to-test trace is unclear.
 
-Keep threat candidates, supporting evidence/proof records, and coverage
-accounting separate. A catalog match can suggest a threat, evidence can support
-or contradict it, and coverage can show it was reviewed; none substitutes for
-the others.
+Use [threat-model.template.json](assets/threat-model.template.json) as the
+starting structure and [threat-model.schema.json](assets/threat-model.schema.json)
+as the output contract. Do not invent a different report structure.
 
-## Build the architecture inventory
+## Establish full-application scope
 
-Inspect source, manifests, IaC, configuration, API/GraphQL schemas, diagrams,
-role matrices, workflows, integration notes, and deployment documents. Map:
+Record the repository path and revision, packages, services, clients,
+deployment environments, supplied specifications and documents, excluded
+third-party internals, runtime authorization, previous model, and unanswered
+questions. Keep `mode` equal to `full`.
 
-- actors and system principals, including unauthenticated, user, peer,
-  cross-tenant, admin, service, worker, and third-party identities;
-- critical business and security assets;
-- logical components, trust zones, data stores, caches, queues, external
-  integrations, AI providers, tools, and control-plane surfaces;
-- REST, GraphQL, RPC, socket, webhook, job, CLI, upload/download,
-  import/export, serverless, and admin entrypoints;
-- authentication, session, authorization, ownership, tenant, validation,
-  secrets, logging, and rate/usage control placement.
+Cover every admitted first-party application component. If time, access, or
+missing evidence prevents full coverage, preserve the complete inventory,
+disposition each gap, and set `model_status` to
+`incomplete_high_risk_coverage`. Never silently narrow a full review.
 
-Group related endpoints into capabilities and workflows. Preserve route and
-file evidence only where it explains a component, flow, boundary, control, or
-security decision.
+Keep these concepts separate:
 
-## Trace attacker-relevant data flows
+- `model_status`: whether the declared full scope has been dispositioned;
+- `assurance_status`: whether conclusions are source-observed or also
+  runtime-validated;
+- `risk`: plausible impact and likelihood of a modeled threat;
+- `confidence`: strength and completeness of supporting evidence;
+- `execution_status`: whether a validation test is only planned or has an
+  authorized result.
 
-For every sensitive or state-changing flow, record:
+A source-observed model may be `complete` while validation tests remain
+`planned`, provided runtime validation was not part of the declared scope and
+all implementation evidence was dispositioned. Express the limitation through
+`assurance_status`; do not misuse coverage status to imply a test ran.
 
-- actor and input source;
-- entrypoint and component handoffs;
-- assets and data classification;
-- each trust-boundary crossing;
-- identity, owner, tenant, role, policy, validation, and serialization decision;
-- data store, outbound integration, background worker, renderer, or other sink;
-- response, side effect, or durable state;
-- observed, intended, assumed, and missing controls.
+Default to read-only analysis. Do not test production, third parties, real
+tenants, or real accounts without explicit authorization. Redact credentials,
+tokens, keys, personal data, and customer data from every artifact.
 
-Follow asynchronous continuation and thin service handoffs. Do not stop at the
-HTTP controller when a worker, webhook, repository, or tool performs the
-security-sensitive action.
+## Inventory before judging
 
-## Correlate intent with implementation
+Build a coverage baseline from all first-party files and supplied evidence.
+Inspect source, manifests and lockfiles, configuration, CI/CD, IaC, containers,
+API and GraphQL schemas, database models, tests, diagrams, role matrices,
+workflows, integration notes, and deployment documents. Map:
 
-Compare source-discovered behavior with API specifications, diagrams, role
-matrices, deployment boundaries, workflows, and control statements. Record:
+- human, service, worker, administrator, support, peer, tenant, and third-party
+  actors;
+- critical business, identity, authorization, financial, operational, privacy,
+  audit, and secret assets;
+- clients, APIs, services, workers, queues, data stores, caches, renderers,
+  control planes, AI systems, and external integrations;
+- public, internal, administrative, legacy, debug, webhook, job, CLI,
+  upload/download, import/export, socket, serverless, and mobile entrypoints;
+- authentication, session, authorization, owner/tenant policy, validation,
+  serialization, secrets, logging, rate, quota, and recovery controls;
+- deployment, network, process, tenant, role, provider, browser, device, and
+  asynchronous trust boundaries.
 
-- code-only and spec-only interfaces;
-- documented controls not located in source;
-- observed controls absent from design documents;
-- ambiguous owner, tenant, role, or control ownership;
-- undocumented boundary crossings and third-party trust;
-- diagram, topology, deployment, and workflow drift.
+Group routes and files into capabilities and business workflows. Retain exact
+locations as evidence, but do not turn the report into a route-by-route review.
+Account for each high-signal item in `coverage`.
 
-Convert unverified intent into an assumption, limitation, security decision,
-or validation test. Never convert it directly into a finding.
+Freeze a deterministic repository manifest before review. Bind its embedded
+content hash to the immutable revision and reconcile its admitted paths, packages,
+environments, documents, and exclusions with metadata. Populate
+`coverage.inventory.expected_subject_ids` from that inventory before changing
+any coverage item from `pending`; never shrink the expected set to make a
+review pass.
 
-## Derive threats and security decisions
+Create the manifest in the selected threat-model output directory:
 
-For each material asset and flow:
+```bash
+python3 <skill-directory>/scripts/build_repository_manifest.py \
+  path/to/application --include . \
+  --output path/to/output/repository-manifest.json
+```
 
-1. State the security invariant, such as “tenant scope precedes export” or
-   “webhook authenticity is verified before state change.”
-2. Describe a concrete actor goal, preconditions, boundary crossed, abuse path,
-   affected asset, and business impact.
-3. Identify visible, assumed, missing, and potentially bypassable controls.
-4. Search for evidence that contradicts the modeled gap.
-5. Rank the risk using impact, exposure, asset sensitivity, privilege,
-   preconditions, control evidence, and coverage confidence.
-6. Define the design decision and a validation test that would resolve the
-   uncertainty.
+Add repeated `--include` and `--exclude` arguments when scope is more precise.
+Pass `--revision` for an immutable VCS/release revision; when omitted, the
+script derives `snapshot-sha256:<digest>` from the admitted bytes. Copy its
+embedded revision and content hash (also printed by the script) into metadata,
+`coverage.inventory.manifest`, and manifest evidence. Use explicit empty arrays
+for documents or exclusions when there are none; do not omit those scope fields.
 
-Use STRIDE as a completeness checklist, then retain only implementation-relevant
-threats. Map relevant decisions to ASVS, OWASP API, or GraphQL themes without
-treating those catalogs as evidence.
+When the reachable surface is non-trivial and `$tahr-map-attack-surface` is
+available, send it the frozen revision and scope before deriving threats, then
+reconcile its inventory into this model rather than treating its output as a
+second source of truth. If that companion skill is unavailable, perform the
+same stable inventory locally using this section; do not block or narrow the
+review.
 
-Apply [threat-evidence-and-quality-gates.md](references/threat-evidence-and-quality-gates.md)
-before finalizing risks or tests.
+## Build an evidence-backed graph
 
-## Add conditional analysis
+Record material facts as claim-level evidence. Use exactly `observed`,
+`intended`, `inferred`, or `unknown`; never combine classes in one field.
 
-- When personal or sensitive data is present, examine linkability,
-  identifiability, disclosure, unawareness, and compliance/consent boundaries.
-- When LLMs, agents, RAG, embeddings, MCP, prompts, or tools are present,
-  examine direct and indirect prompt injection, authorization loss at tool or
-  retrieval boundaries, data exfiltration, supply-chain trust, evaluation
-  bypass, and wallet/quota abuse.
-- Mark either lane not applicable with evidence rather than inventing risks.
+For every sensitive or state-changing flow, model each hop from the initiating
+actor to the final response, durable state, or side effect. At each hop record:
 
-## Produce executable validation cases
+- source, destination, protocol, input, and affected assets;
+- actor, user, service, owner, tenant, role, and policy context;
+- trust boundary crossed;
+- validation, serialization, authentication, authorization, and logging
+  controls;
+- queues, workers, callbacks, redirects, repositories, providers, tools,
+  browsers, and other continuation points.
 
-For every material uncertain or missing control, specify the actor, asset,
-boundary, preconditions, fixture/setup, exact test objective, expected control,
-positive success signal, negative/denial signal, evidence to collect, safe
-target environment, and confidence. These are test hypotheses, not confirmed
-vulnerabilities.
+Do not stop at a controller when another component performs the security
+decision. Include data creation, replication, retention, deletion, backup,
+residency, and third-party handling where material.
 
-## Review model quality and coverage
+## Derive material threats
 
-Check that every high-signal entrypoint, auth/authz file, sensitive asset,
-trust boundary, integration, worker, admin surface, deployment zone, and
-security decision is read or dispositioned. Record unread items and their
-confidence impact.
+For each critical asset and flow:
 
-Do not publish a clean or complete threat model while high-risk coverage gaps,
-unknown trust boundaries, or unowned critical controls remain unresolved. Mark
-the model `incomplete_high_risk_coverage`, preserve the gaps, and prioritize
-the work needed to close them.
+1. State the security invariant.
+2. Define a realistic actor, goal, preconditions, boundary, abuse steps,
+   affected assets, and business impact.
+3. Locate observed and intended controls and their enforcement points.
+4. Search for the strongest contradiction in middleware, policy, service,
+   repository, serializer, validator, framework, IaC, or deployment controls.
+5. Reject, narrow, or mark the threat `validation_required` according to the
+   contradiction result.
+6. Rank risk with an explicit rationale and keep confidence separate.
+7. Assign a response, decision, owner, next action, residual risk, and
+   validation test.
+
+Use STRIDE as a completeness prompt, not as evidence or a requirement to emit
+one threat per category. Use ASVS, OWASP API, GraphQL, privacy, mobile, or AI
+taxonomies only to find omissions and map controls. Retain only threats that
+connect to the implementation-backed graph.
+
+Build attack paths only from connected model IDs. Mark uncertain steps
+conditional; do not invent a hop merely to make a chain more severe.
+
+Keep the canonical model proportional to the application. Reuse a control,
+invariant, decision, or validation test across related threats when the
+enforcement point, owner, and discriminating oracle are genuinely the same.
+Keep claim statements short and reference stable IDs instead of copying the
+same narrative. Do not create reciprocal records solely to make the artifact
+look complete.
+
+If no candidate survives the evidence, contradiction, and materiality gates,
+leave `threats`, `attack_paths`, `decisions`, `validation_tests`, and
+`questions` empty. Preserve the populated inventory, graph, implemented
+invariants and controls, evidence, coverage, and independent challenge. Never
+invent a low-value threat or test to avoid an empty ledger.
+
+## Add applicable specialist analysis
+
+When personal or regulated data is present, trace collection, linkability,
+identifiability, detectability, disclosure, consent/awareness, retention,
+deletion, residency, and third-party processing.
+
+When LLMs, agents, RAG, embeddings, MCP, prompts, memory, providers, or tools
+are present, trace prompt injection, retrieval and memory isolation, tool
+authorization, confused-deputy paths, output trust, provider disclosure,
+supply-chain changes, evaluation bypass, and wallet/quota abuse.
+
+When a lane is not applicable, record `applicable: false` with evidence. Do not
+invent threats merely to populate a taxonomy.
+
+## Create executable validation handoffs
+
+Create a validation test for every material uncertain, missing, or potentially
+bypassable control. Include the target Tahr skill, authorization required,
+safe environment, fixtures, preconditions, normal baseline, exact action,
+expected control, `attacker_case.attacker_success_signal` and
+`expected_denial_signal`, `control_case.control_success_signal` and
+`control_failure_signal`, evidence, cleanup, destructive risk, confidence, and
+current execution status.
+
+Treat each test as `planned` until authorized evidence proves otherwise. Never
+convert a proposed test into a finding. Route the test to the specialist named
+in [specialist-handoffs.md](references/specialist-handoffs.md).
+
+## Challenge before publishing
+
+Run a separate adversarial quality pass after producing the draft and before
+publishing it. Use an independent subagent when available; otherwise use a
+fresh, explicitly separate review pass. Give the reviewer the draft model and
+source evidence, not the desired conclusions.
+
+Require the reviewer to challenge missing assets, actors, boundaries, flow
+hops, contradictory controls, unsupported impact, inflated risk, route-review
+drift, unhandled documentation, incomplete coverage, weak actions, broken
+references, and non-executable tests. Record findings and their dispositions in
+`quality_review.challenge_findings`.
+Resolve every high-severity review finding or keep the review and model failed.
+The reviewer must not silently rewrite the model it is judging.
+
+## Validate and render
+
+For a durable model, write only to a user-selected output directory or a
+clearly named `tahr-threat-model-output/` directory. Never modify application
+source during the review.
+
+Validate before presenting the model as final:
+
+```bash
+python3 <skill-directory>/scripts/validate_threat_model.py \
+  path/to/threat-model.json --strict
+```
+
+Fix validation failures, rerun the independent challenge when material model
+content changes, and validate again. Then render concise views:
+
+```bash
+python3 <skill-directory>/scripts/render_threat_model.py \
+  path/to/threat-model.json --output-dir path/to/output --strict
+```
+
+The renderer produces `threat-model.md`, `validation-plan.json`, and
+`coverage.json` from the canonical model. Do not edit derived files as though
+they were independent sources of truth.
+
+## Deliver concise-first results
+
+Lead with:
+
+1. model and assurance status;
+2. the five most important connected attack paths or threats;
+3. blocking security decisions and their owners;
+4. the first five validation tests;
+5. high-risk coverage gaps.
+
+Place complete ledgers after that summary or in the canonical JSON artifact.
+Avoid repeating the same threat narrative in every section.
+
+Never conclude that the application is secure. A clean full model means only
+that no additional material modeled risks were identified within the stated,
+completed evidence scope. Preserve assumptions, limitations, accepted risks,
+pending tests, and a review date so future changes can update the model rather
+than starting over.

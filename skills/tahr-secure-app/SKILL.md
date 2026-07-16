@@ -64,7 +64,8 @@ Read [references/review-routing.md](references/review-routing.md) and invoke onl
 - `$tahr-test-business-workflows` for state, pricing, quota, invitation, approval, replay, and race abuse;
 - `$tahr-audit-secrets-config` for secrets, cryptography, dependencies, infrastructure, and deployment defaults;
 - `$tahr-test-ai-agents` or `$tahr-audit-android` when those technologies exist;
-- `$tahr-threat-model-app` when design risks or validation plans are requested.
+- `$tahr-threat-model-app` when a full-system threat model and validation plan
+  are requested for the entire existing application.
 
 ## Investigate and challenge
 

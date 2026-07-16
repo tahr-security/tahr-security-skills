@@ -33,7 +33,7 @@ Start with `tahr-secure-app` for a coordinated application review. Use a special
 | `tahr-audit-secrets-config` | Audit secrets, cryptography, dependencies, CI/CD, infrastructure, and runtime configuration. |
 | `tahr-test-ai-agents` | Test LLM, RAG, memory, ingestion, rendering, tool-calling, MCP, and agent boundaries. |
 | `tahr-audit-android` | Review Android artifacts, exported components, IPC, WebViews, storage, and mobile APIs. |
-| `tahr-threat-model-app` | Create an implementation-backed threat model with abuse cases and executable tests. |
+| `tahr-threat-model-app` | Threat-model an entire existing application with connected attack paths, security decisions, validated coverage, and executable test handoffs. |
 | `tahr-verify-security-fix` | Retest a remediation in the original vulnerable context and check for bypasses and regressions. |
 
 ## Design principles

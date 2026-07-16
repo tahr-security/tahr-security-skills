@@ -12,7 +12,7 @@ Load only references and skills relevant to observed application signals.
 | Secrets, crypto, CORS, headers, IaC, containers, cloud, dependencies | `$tahr-audit-secrets-config` | Exposure/config/reachability ledger and exact remediation target |
 | LLM, RAG, embeddings, memory, model-rendered output, tools, MCP | `$tahr-test-ai-agents` | AI surface, concept-family attempts, repeated boundary proof |
 | APK/AAB, Android manifest, deep links, IPC, WebView | `$tahr-audit-android` | Static candidates, runtime reachability, MASVS-oriented coverage |
-| Architecture or feature-design question | `$tahr-threat-model-app` | Assets, boundaries, abuse paths, controls, executable test cases |
+| Full-system threat model of an existing application | `$tahr-threat-model-app` | Assets, boundaries, connected attack paths, decisions, validated coverage, executable test handoffs |
 | Patched accepted finding | `$tahr-verify-security-fix` | Equivalent-context verdict, regression and adjacent-bypass checks |
 
 ## Review ordering
