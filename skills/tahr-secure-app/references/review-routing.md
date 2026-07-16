@@ -6,7 +6,7 @@ Load only references and skills relevant to observed application signals.
 |---|---|---|
 | Unknown or undocumented routes, multiple clients, sparse coverage | `$tahr-map-attack-surface` | Canonical operation and identity inventory plus gaps |
 | Login, reset, MFA, SSO, tokens, cookies, browser storage | `$tahr-test-authentication` | Lifecycle model, validated identity contexts, proof-gated candidates |
-| IDs, roles, tenants, organizations, admin functions, GraphQL mutations | `$tahr-test-access-control` | Actor-resource-action matrix and owner-attributed comparisons |
+| IDs, roles, tenants, organizations, admin functions, GraphQL mutations | `$tahr-test-access-control` | Frozen operation/obligation inventory, actor-resource-action matrix, enforcement traces, five-gate decisions, and explicit coverage |
 | Query building, rendering, commands, URLs, XML, files, uploads, DOM sinks | `$tahr-trace-dangerous-inputs` | Source-to-sink ledger and class-specific proofs |
 | Pricing, billing, invitations, approvals, quotas, one-time actions, state machines | `$tahr-test-business-workflows` | Invariants, transition matrix, baseline/action/readback evidence |
 | Secrets, crypto, CORS, headers, IaC, containers, cloud, dependencies | `$tahr-audit-secrets-config` | Exposure/config/reachability ledger and exact remediation target |

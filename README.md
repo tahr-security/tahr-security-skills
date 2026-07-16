@@ -27,7 +27,7 @@ Start with `tahr-secure-app` for a coordinated application review. Use a special
 | `tahr-secure-app` | Coordinate a comprehensive, evidence-backed application security review. |
 | `tahr-map-attack-surface` | Build a role-aware inventory of reachable routes, parameters, interfaces, and trust boundaries. |
 | `tahr-test-authentication` | Review login, recovery, MFA, sessions, tokens, SSO, and account-takeover paths. |
-| `tahr-test-access-control` | Test object-, function-, property-, role-, and tenant-level authorization. |
+| `tahr-test-access-control` | Model and trace object-, function-, property-, role-, and tenant-level authorization; prove exploitable gaps and reject weak ID/status-code leads. |
 | `tahr-trace-dangerous-inputs` | Trace attacker-controlled input to injection, SSRF, traversal, upload, and browser sinks. |
 | `tahr-test-business-workflows` | Abuse-test stateful workflows, invariants, races, replay, quotas, and entitlements. |
 | `tahr-audit-secrets-config` | Audit secrets, cryptography, dependencies, CI/CD, infrastructure, and runtime configuration. |

@@ -59,7 +59,8 @@ Prioritize unauthenticated paths, cross-user or cross-tenant boundaries, state-c
 Read [references/review-routing.md](references/review-routing.md) and invoke only the applicable specialist skills. A comprehensive review normally includes:
 
 - `$tahr-test-authentication` for login, recovery, MFA, OAuth/OIDC, tokens, cookies, and session lifecycle;
-- `$tahr-test-access-control` for object, role, function, and tenant authorization;
+- `$tahr-test-access-control` for a complete actor-resource-action model,
+  path-specific authorization traces, proof-gated findings, and safe validation;
 - `$tahr-trace-dangerous-inputs` for injection, browser sinks, outbound requests, parsers, files, and uploads;
 - `$tahr-test-business-workflows` for state, pricing, quota, invitation, approval, replay, and race abuse;
 - `$tahr-audit-secrets-config` for secrets, cryptography, dependencies, infrastructure, and deployment defaults;
