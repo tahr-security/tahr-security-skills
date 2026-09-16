@@ -35,6 +35,9 @@ Start with `tahr-secure-app` for a coordinated application review. Use a special
 | `tahr-audit-android` | Review Android artifacts, exported components, IPC, WebViews, storage, and mobile APIs. |
 | `tahr-threat-model-app` | Threat-model an entire existing application with connected attack paths, security decisions, validated coverage, and executable test handoffs. |
 | `tahr-verify-security-fix` | Retest a remediation in the original vulnerable context and check for bypasses and regressions. |
+| `tahr-review-tahr-findings` | Optionally review Tahr account applications, assessments, and findings through a read-only workflow. |
+
+`tahr-review-tahr-findings` is an optional customer skill that requires a manually configured Tahr MCP connection in Codex and keeps all Tahr interactions read-only. All other skills work without Tahr or a Tahr account. Configure credentials through the Codex MCP connection; never paste a token into chat.
 
 ## Design principles
 
